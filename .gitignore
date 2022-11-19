@@ -1,7 +1,9 @@
 .DS_Store
 .dart_tool/
-
 .packages
 .pub/
-
+.dart_tool/
+.idea
+.vscode
+pubspec.lock
 build/
