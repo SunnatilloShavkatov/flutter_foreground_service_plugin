@@ -80,8 +80,6 @@ public class FlutterForegroundService extends Service {
                 startForeground(ONGOING_NOTIFICATION_ID, builder.build());
                 break;
             case FlutterForegroundPlugin.STOP_FOREGROUND_ACTION:
-                stopFlutterForegroundService();
-                break;
             case ACTION_STOP_SERVICE:
                 stopFlutterForegroundService();
                 break;

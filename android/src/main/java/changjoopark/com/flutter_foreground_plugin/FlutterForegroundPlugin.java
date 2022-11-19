@@ -1,5 +1,6 @@
 package changjoopark.com.flutter_foreground_plugin;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
@@ -24,6 +25,7 @@ public class FlutterForegroundPlugin implements FlutterPlugin, MethodCallHandler
     public final static String START_FOREGROUND_ACTION = "com.changjoopark.flutter_foreground_plugin.action.startforeground";
     public final static String STOP_FOREGROUND_ACTION = "com.changjoopark.flutter_foreground_plugin.action.stopforeground";
 
+    @SuppressLint("StaticFieldLeak")
     private static FlutterForegroundPlugin instance;
 
     private Context context;
@@ -35,7 +37,7 @@ public class FlutterForegroundPlugin implements FlutterPlugin, MethodCallHandler
     private Runnable runnable;
     private Handler handler = new Handler(Looper.getMainLooper());
 
-    private FlutterForegroundPlugin() {}
+    public FlutterForegroundPlugin() {}
 
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
