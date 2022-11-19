@@ -1,5 +1,6 @@
 package changjoopark.com.flutter_foreground_plugin;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,7 +16,7 @@ import androidx.core.app.NotificationCompat;
 
 
 public class FlutterForegroundService extends Service {
-    private static String TAG = "FlutterForegroundService";
+    private static final String TAG = "FlutterForegroundService";
     public static int ONGOING_NOTIFICATION_ID = 1;
     public static final String NOTIFICATION_CHANNEL_ID = "CHANNEL_ID";
     public static final String ACTION_STOP_SERVICE = "STOP";
@@ -39,7 +40,7 @@ public class FlutterForegroundService extends Service {
             case FlutterForegroundPlugin.START_FOREGROUND_ACTION:
                 PackageManager pm = getApplicationContext().getPackageManager();
                 Intent notificationIntent = pm.getLaunchIntentForPackage(getApplicationContext().getPackageName());
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                         notificationIntent, 0);
 
                 Bundle bundle = intent.getExtras();
@@ -66,7 +67,7 @@ public class FlutterForegroundService extends Service {
                     Intent stopSelf = new Intent(this, FlutterForegroundService.class);
                     stopSelf.setAction(ACTION_STOP_SERVICE);
 
-                    PendingIntent pStopSelf = PendingIntent
+                    @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pStopSelf = PendingIntent
                             .getService(this, 0, stopSelf, PendingIntent.FLAG_CANCEL_CURRENT);
                     builder.addAction(getNotificationIcon(bundle.getString("stop_icon")),
                             bundle.getString("stop_text"),
@@ -107,7 +108,7 @@ public class FlutterForegroundService extends Service {
     }
 
     private int getNotificationIcon(String iconName) {
-        int resourceId = getApplicationContext().getResources().getIdentifier(iconName, "drawable", getApplicationContext().getPackageName());
+        @SuppressLint("DiscouragedApi") int resourceId = getApplicationContext().getResources().getIdentifier(iconName, "drawable", getApplicationContext().getPackageName());
         return resourceId;
     }
 

@@ -1,12 +1,12 @@
 package changjoopark.com.flutter_foreground_plugin;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+
+import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -14,9 +14,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
-import io.flutter.embedding.engine.plugins.activity.ActivityAware;
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
 /**
  * FlutterForegroundPlugin
@@ -25,12 +22,8 @@ public class FlutterForegroundPlugin implements FlutterPlugin, MethodCallHandler
     public final static String START_FOREGROUND_ACTION = "com.changjoopark.flutter_foreground_plugin.action.startforeground";
     public final static String STOP_FOREGROUND_ACTION = "com.changjoopark.flutter_foreground_plugin.action.stopforeground";
 
-    @SuppressLint("StaticFieldLeak")
-    private static FlutterForegroundPlugin instance;
-
     private Context context;
     private MethodChannel callbackChannel;
-    private BinaryMessenger messenger;
     private int methodInterval = -1;
     private long dartServiceMethodHandle = -1;
     private boolean serviceStarted = false;
@@ -47,33 +40,21 @@ public class FlutterForegroundPlugin implements FlutterPlugin, MethodCallHandler
 
     public void onAttachedToEngine(Context applicationContext, BinaryMessenger messenger) {
         System.out.println("onAttachedToEngine called!!");
-        this.messenger = messenger;
         this.context = applicationContext;
-        final MethodChannel channel = new MethodChannel(this.messenger, "com.changjoopark.flutter_foreground_plugin/main");
+        final MethodChannel channel = new MethodChannel(messenger, "com.changjoopark.flutter_foreground_plugin/main");
         channel.setMethodCallHandler(this);
         callbackChannel = new MethodChannel(messenger, "com.changjoopark.flutter_foreground_plugin/callback");
     }
 
     @Override
-    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         System.out.println("onDetachedFromEngine called!!");
     }
 
-    /**
-     * Plugin registration.
-     */
-    public static void registerWith(Registrar registrar) {
-        if (instance == null) {
-            instance = new FlutterForegroundPlugin();
-        }
-        instance.onAttachedToEngine(registrar.context(), registrar.messenger());
-    }
-
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
+    public void onMethodCall(MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "startForegroundService":
-                final Boolean holdWakeLock = call.argument("holdWakeLock");
                 final String icon = call.argument("icon");
                 final int color = call.argument("color");
                 final String title = call.argument("title");
@@ -97,8 +78,7 @@ public class FlutterForegroundPlugin implements FlutterPlugin, MethodCallHandler
                     break;
                 }
 
-                int seconds = call.argument("seconds");
-                methodInterval = seconds;
+                methodInterval = call.argument("seconds");
                 result.success("setServiceMethodInterval");
                 break;
             case "setServiceMethodHandle":
@@ -107,8 +87,7 @@ public class FlutterForegroundPlugin implements FlutterPlugin, MethodCallHandler
                     break;
                 }
 
-                long methodHandle = call.argument("serviceMethodHandle");
-                dartServiceMethodHandle = methodHandle;
+                dartServiceMethodHandle = call.argument("serviceMethodHandle");
 
                 result.success("setServiceMethodHandle");
                 break;

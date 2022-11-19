@@ -1,4 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="changjoopark.com.flutter_foreground_plugin">
-
-</manifest>
+<manifest package="changjoopark.com.flutter_foreground_plugin" />

@@ -56,13 +56,14 @@ class FlutterForegroundPlugin {
   }
 
   static Future<void> setServiceMethod(Function serviceMethod) async {
-    final serviceMethodHandle =
-        PluginUtilities.getCallbackHandle(serviceMethod)!.toRawHandle();
+    final handle = PluginUtilities.getCallbackHandle(serviceMethod);
+    if (handle != null) {
+      final serviceMethodHandle = handle.toRawHandle();
+      _callbackChannel.setMethodCallHandler(_onForegroundServiceCallback);
 
-    _callbackChannel.setMethodCallHandler(_onForegroundServiceCallback);
-
-    await _mainChannel.invokeMethod("setServiceMethodHandle",
-        <String, dynamic>{'serviceMethodHandle': serviceMethodHandle});
+      await _mainChannel.invokeMethod("setServiceMethodHandle",
+          <String, dynamic>{'serviceMethodHandle': serviceMethodHandle});
+    }
   }
 
   static Future<void> setServiceMethodInterval({int seconds = 5}) async {
